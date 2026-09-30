@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#12090E"
+    tools:ignore="HardcodedText"
+    tools:context=".Settings">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:textColor="#E8B8A0"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:fontFamily="serif"
+        android:gravity="center"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="8dp">
+
+            <!-- ===== USER DETAILS CARD ===== -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User Details"
+                    android:textColor="#E8B8A0"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+
+                <EditText
+                    android:id="@+id/etName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:hint="Your name"
+                    android:textColor="#F5E6DA"
+                    android:textColorHint="#8A6F72"
+                    android:background="@android:color/transparent"
+                    android:backgroundTint="#4A2E30"
+                    android:inputType="textPersonName"
+                    android:padding="8dp"/>
+
+                <EditText
+                    android:id="@+id/etMobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:hint="Mobile number"
+                    android:textColor="#F5E6DA"
+                    android:textColorHint="#8A6F72"
+                    android:background="@android:color/transparent"
+                    android:backgroundTint="#4A2E30"
+                    android:inputType="phone"
+                    android:maxLength="10"
+                    android:padding="8dp"/>
+
+                <EditText
+                    android:id="@+id/etDob"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:hint="Date of birth (tap to pick)"
+                    android:textColor="#F5E6DA"
+                    android:textColorHint="#8A6F72"
+                    android:background="@android:color/transparent"
+                    android:backgroundTint="#4A2E30"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:padding="8dp"/>
+
+            </LinearLayout>
+
+            <!-- ===== FRIDAY BRAIN CARD ===== -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Friday Brain — Response Style"
+                    android:textColor="#E8B8A0"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+
+                <!-- Temperature -->
+                <TextView
+                    android:id="@+id/tvTempLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Temperature: 0.70"
+                    android:textColor="#F5E6DA"
+                    android:textSize="14sp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Controls randomness. Low = focused/predictable, high = creative/wild."
+                    android:textColor="#8A6F72"
+                    android:textSize="11sp"
+                    android:layout_marginBottom="4dp"/>
+                <SeekBar
+                    android:id="@+id/seekTemperature"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="200"
+                    android:progress="70"
+                    android:progressTint="#D9A882"
+                    android:thumbTint="#D9A882"/>
+
+                <!-- Top-P -->
+                <TextView
+                    android:id="@+id/tvTopPLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Top-P: 0.95"
+                    android:textColor="#F5E6DA"
+                    android:textSize="14sp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nucleus sampling — keeps only the smallest set of likely words whose combined probability hits this value. Lower = safer word choice."
+                    android:textColor="#8A6F72"
+                    android:textSize="11sp"
+                    android:layout_marginBottom="4dp"/>
+                <SeekBar
+                    android:id="@+id/seekTopP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:progress="95"
+                    android:progressTint="#D9A882"
+                    android:thumbTint="#D9A882"/>
+
+                <!-- Top-K -->
+                <TextView
+                    android:id="@+id/tvTopKLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Top-K: 10"
+                    android:textColor="#F5E6DA"
+                    android:textSize="14sp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Only considers the top K most likely next words. Lower = tighter, more repeatable replies."
+                    android:textColor="#8A6F72"
+                    android:textSize="11sp"
+                    android:layout_marginBottom="4dp"/>
+                <SeekBar
+                    android:id="@+id/seekTopK"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:progress="10"
+                    android:progressTint="#D9A882"
+                    android:thumbTint="#D9A882"/>
+
+            </LinearLayout>
+
+            <!-- ===== SAVE BUTTON ===== -->
+            <TextView
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="28dp"
+                android:background="@drawable/button_bg"
+                android:gravity="center"
+                android:text="Save Settings"
+                android:textColor="#12090E"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:clickable="true"
+                android:focusable="true"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
