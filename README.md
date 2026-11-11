@@ -7,7 +7,7 @@
 *No cloud. No API keys. No data leaving your phone. Fully offline after a one-time setup.*
 
 ![Platform](https://img.shields.io/badge/platform-Android-3DDC84?logo=android&logoColor=white)
-![Offline](https://img.shields.io/badge/mode-100%25%20Offline-blueviolet)
+![Offline](https://img.shields.io/badge/mode-Offline-blueviolet)
 ![TFLite](https://img.shields.io/badge/ML-TensorFlow%20Lite-FF6F00?logo=tensorflow&logoColor=white)
 ![Status](https://img.shields.io/badge/status-complete-brightgreen)
 
@@ -149,23 +149,12 @@ friday/
 
 ---
 
-## 📸 Screenshots
-
-| Home | Listening | Response |
-|:---:|:---:|:---:|
-| *(add image)* | *(add image)* | *(add image)* |
-
-Tip: put images in a `/screenshots` folder and link them like `![Home](screenshots/home.png)`.
-
----
-
 ## 🗺️ Roadmap
 
 - [x] On-device STT and TTS
 - [x] 5-class intent classifier (TFLite)
 - [x] Rule-based slot extraction
 - [x] Character personality
-- [ ] **JARVIS integration**: connect Friday with the JARVIS desktop companion so both work together as one assistant system
 - [ ] More intent classes
 - [ ] More response variety
 
