@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:fontFamily="serif"
-        android:text="Happy!"
+        android:text="Friday"
         android:textColor="#C57E56"
         android:textSize="52sp"
         android:textStyle="bold"
