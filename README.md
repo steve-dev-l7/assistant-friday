@@ -60,12 +60,12 @@ It has a personality too: sharp, witty, and a little sarcastic.
 | Layer | Technology |
 |---|---|
 | Platform | Android |
-| Language | `<Kotlin / Java>` |
+| Language | Kotlin |
 | Intent model | TensorFlow Lite (custom 5-class classifier) |
 | Slot extraction | Rule-based |
 | LLM | Gemma (`.litertlm`, about 2.5 GB) via LiteRT-LM, CPU backend |
 | Wake word | VOSK (offline) |
-| Speech-to-Text | `<your STT engine>` |
+| Speech-to-Text | Google SpeechRecognizer (offline language pack) |
 | Text-to-Speech | Android system speech synthesis (offline voice data) |
 
 ---
@@ -75,13 +75,13 @@ It has a personality too: sharp, witty, and a little sarcastic.
 ### Prerequisites
 - Android Studio (latest stable)
 - An Android device or emulator
-- Android SDK `<min SDK version>` or higher
+- Android 9 (API 28) or higher
 
 ### Installation
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/<your-username>/friday.git
+git clone https://github.com/steve-dev-l7/assistant-friday.git
 
 # 2. Open in Android Studio
 #    File → Open → select the project folder
@@ -97,7 +97,7 @@ git clone https://github.com/<your-username>/friday.git
 
 ## ⚙️ First-time setup (internet needed once)
 
-Friday is fully offline, but two things must be downloaded the first time.
+Friday is fully offline, but three things must be downloaded the first time.
 
 ### 1. Download the AI model (automatic)
 - On the **first app launch**, Friday downloads its Gemma model (about **2.5 GB**).
@@ -115,7 +115,14 @@ Friday speaks using your phone's built-in speech synthesis. For it to work **wit
 
 > 💡 Menu names differ slightly between phone brands. If you cannot find it, search for "text-to-speech" or "voice" in your Settings search bar.
 
-After both steps, turn off your internet and Friday will keep working. ✈️
+### 3. Download offline speech recognition (manual)
+Friday listens to your commands using Google's speech recognizer. Without the offline language pack, it may send your audio to Google's servers, so download it:
+
+1. Open your phone's **Settings** and search for **Offline speech recognition**
+   (or open the **Google** app → **Settings** → **Voice** → **Offline speech recognition**)
+2. Download **English (India)**
+
+After all three steps, turn off your internet and Friday will keep working. ✈️
 
 ---
 
@@ -134,7 +141,7 @@ After both steps, turn off your internet and Friday will keep working. ✈️
 ## 📁 Project structure
 
 ```
-friday/
+assistant-friday/
 ├── app/
 │   ├── src/main/
 │   │   ├── java/com/example/friday/   # App source code
@@ -171,7 +178,7 @@ Suggestions and pull requests are welcome. Open an issue first to discuss big ch
 **Sakthivel B (Steve)**
 MCA student, B.S. Abdur Rahman Crescent Institute of Science and Technology, Chennai
 
-🔗 GitHub: [@your-username](https://github.com/your-username)
+🔗 GitHub: [@steve-dev-l7](https://github.com/steve-dev-l7)
 
 ---
 
