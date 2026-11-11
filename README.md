@@ -167,6 +167,8 @@ assistant-friday/
 
 ---
 
+⚠️ **Play Protect warning:** Google Play Protect may show "unrecognized app" because Friday is not distributed through the Play Store. Tap **More details → Install anyway**. The app is open source, so you can read every line of code in this repo.
+
 ## 🤝 Contributing
 
 Suggestions and pull requests are welcome. Open an issue first to discuss big changes.
