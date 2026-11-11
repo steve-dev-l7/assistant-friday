@@ -29,7 +29,7 @@
             android:fontFamily="serif"
             android:gravity="center"
             android:letterSpacing="0.02"
-            android:text="Happy!"
+            android:text="Friday"
             android:textColor="#F0C8B8"
             android:textSize="45sp"
             android:textStyle="bold" />

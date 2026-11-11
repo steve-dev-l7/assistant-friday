@@ -26,8 +26,24 @@ class WakeWordManager (private val context: Context, private val listener: WakeW
     var isPaused: Boolean = false
     var isRunning: Boolean = false
 
-    // Intha list-la mattum puthu words-ah add pannikonga bro
-    private val wakeWordsList = listOf("hey happy", "hey friday")
+
+    private val wakeWordsList = listOf(
+        "friday",
+        "fryday",
+        "freeday",
+        "fri day",
+        "fry day",
+        "flyday",
+        "fly day",
+        "fiday",
+        "priday",
+        "pri day",
+        "ride day",
+        "try day",
+        "hi day",
+        "ryday",
+        "phyday"
+    )
 
     fun initVOSK() {
         StorageService.unpack(context, "wake_word", "model", { modelInstance ->

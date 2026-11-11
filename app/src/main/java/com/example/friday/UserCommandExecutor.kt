@@ -19,10 +19,41 @@ class UserCommandExecutor(private val context: Context, private val listener: Ex
     private val intentClassifier = IntentClassifier(context)
     private val reminderHandler = Handler(Looper.getMainLooper())
 
+    private val contactsMap = HashMap<String, String>()
+
     interface ExecutorFeedbackListener {
         fun commandExecutorOnSpeak(text: String)
         fun commandExecutorOnUnknownQuery(rawCommand: String)
         fun commandExecutorOnDeactivate()
+    }
+
+    init {
+        loadContactsToHashMap()
+    }
+
+    private fun loadContactsToHashMap(){
+        val uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+        val projection = arrayOf(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER)
+
+        context.contentResolver.query(uri, projection, null, null, null)?.use {cursor ->
+                val nameIndex =
+                    cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+                val numberIndex =
+                    cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+
+                while (cursor.moveToNext()) {
+                    if (nameIndex != -1 && numberIndex != -1) {
+                        val name =
+                            cursor.getString(nameIndex)?.lowercase()?.replace("\\s+".toRegex(), "")
+                                ?: ""
+                        val number =
+                            cursor.getString(numberIndex)?.replace("\\s+".toRegex(), "") ?: ""
+                        if (name.isNotEmpty() && number.isNotEmpty()) {
+                            contactsMap[name] = number
+                        }
+                    }
+                }
+        }
     }
 
     fun executeCommand(rawCommand: String) {
@@ -113,38 +144,89 @@ class UserCommandExecutor(private val context: Context, private val listener: Ex
         }
     }
 
-    private fun getContactNumberByName(contactName: String): String? {
-        val contentResolver = context.contentResolver
-        val uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
-        val projection = arrayOf(
-            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-            ContactsContract.CommonDataKinds.Phone.NUMBER
-        )
+    fun getContactNumberByName(targetName: String): String? {
+        val rawTarget = targetName.lowercase().replace("\\s+".toRegex(), "")
+        val phoneticTarget = phoneticNormalize(targetName)
 
-        val normalizedTarget = normalizeName(contactName)
-        var number: String? = null
+        var bestMatchNumber: String? = null
+        var highestScore = 0.0
 
-        val cursor: Cursor? = contentResolver.query(uri, projection, null, null, null)
+        for ((originalName, number) in contactsMap) {
+            val rawContact = originalName.lowercase().replace("\\s+".toRegex(), "")
 
-        cursor?.use {
-            val nameIndex = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
-            val numberIndex = it.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+            // TIER 1: Direct Raw Match (Exact spelling check)
+            val rawScore = calculateSimilarity(rawTarget, rawContact)
 
-            while (it.moveToNext()) {
-                if (nameIndex == -1 || numberIndex == -1) continue
+            if (rawScore >= 0.8 && rawScore > highestScore) {
+                highestScore = rawScore
+                bestMatchNumber = number
+                continue // 80% mela kedaichiduchu, so next contact check poga move aagalam
+            }
 
-                val rawName = it.getString(nameIndex) ?: continue
-                val normalizedRowName = normalizeName(rawName)
+            // TIER 2: Phonetic Match (Spelling thappa iruntha mattum ithu vela seiyum)
+            // Kadir vs Kathir mathiri cases-kku ithu kaappathum
+            val phoneticContact = phoneticNormalize(originalName)
+            val phoneticScore = calculateSimilarity(phoneticTarget, phoneticContact)
 
-                // Exact match check
-                if (normalizedRowName == normalizedTarget) {
-                    number = it.getString(numberIndex)?.replace("\\s+".toRegex(), "")
-                    return@use
-                }
+            // Phonetic pandrathala strict ah 85% mela iruntha mattum edukkalam
+            if (phoneticScore >= 0.85 && phoneticScore > highestScore) {
+                highestScore = phoneticScore
+                bestMatchNumber = number
             }
         }
 
-        return number
+        return bestMatchNumber
+    }
+
+    // 1. THE PHONETIC NORMALIZER (Sound Flattening)
+    private fun phoneticNormalize(name: String): String {
+        var str = name.lowercase().replace("\\s+".toRegex(), "") // Space and caps remove pandrom
+
+        // Tamil/Indian English spelling confusions ah replace pandrom
+        str = str.replace("sh", "s")
+        str = str.replace("th", "t")
+        str = str.replace("d", "t")   // kadir -> katir, kathir -> katir
+        str = str.replace("g", "k")   // ganesh -> kanesh
+        str = str.replace("b", "p")   // balu -> palu
+        str = str.replace("ph", "f")
+        str = str.replace("ee", "i")
+        str = str.replace("oo", "u")
+
+        // Double letters ah single letter ah aakurom (ex: sasi vs sassi -> sasi)
+        str = str.replace(Regex("(.)\\1+"), "$1")
+
+        return str
+    }
+
+    private fun calculateSimilarity(s1: String, s2: String) : Double {
+
+        if (s1 == s2) return 1.0
+        val maxLength = Math.max(s1.length, s2.length)
+
+        if (maxLength == 0) return 1.0
+
+        val costs = IntArray(s2.length + 1)
+        for (i in 0..s1.length) {
+            var lastValue = i
+            for (j in 0..s2.length) {
+                if (i == 0) {
+                    costs[j] = j
+                } else {
+                    if (j > 0) {
+                        var newValue = costs[j - 1]
+                        if (s1[i - 1] != s2[j - 1]) {
+                            newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1
+                        }
+                        costs[j - 1] = lastValue
+                        lastValue = newValue
+                    }
+                }
+            }
+            if (i > 0) costs[s2.length] = lastValue
+
+        }
+        val distance = costs[s2.length]
+        return (maxLength - distance).toDouble() / maxLength.toDouble()
     }
 
     private fun normalizeName(name: String): String {

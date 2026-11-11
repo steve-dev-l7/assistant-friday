@@ -70,5 +70,7 @@ dependencies {
     implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
     //noinspection UseTomlInstead
     implementation("org.eclipse.paho:org.eclipse.paho.android.service:1.1.1")
+    //noinspection UseTomlInstead
+    implementation("com.google.mlkit:translate:17.0.3")
 
 }

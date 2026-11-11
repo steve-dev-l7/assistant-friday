@@ -91,7 +91,7 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/img"
-        android:label="Happy"
+        android:label="Friday"
         android:roundIcon="@mipmap/img"
         android:supportsRtl="true"
         android:theme="@style/Theme.Friday">

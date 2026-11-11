@@ -16,6 +16,7 @@ class CommandListenerManager(private val context: Context, private val listener:
     private val mainHandler=Handler(Looper.getMainLooper())
     private val TAG = "CommandListenerManager"
 
+
     interface CommandResultListener{
         fun onCommandReceived(command: String)
         fun onCommandError(error: String)
@@ -44,6 +45,7 @@ class CommandListenerManager(private val context: Context, private val listener:
             }
 
             override fun onError(error: Int) {
+                Log.d(TAG, "Offline test:$error")
                 listener.onCommandError(getErrorText(error))
             }
 
@@ -56,7 +58,7 @@ class CommandListenerManager(private val context: Context, private val listener:
             }
 
             override fun onReadyForSpeech(params: Bundle?) {
-                Log.d(TAG, "Mic ready bro, start speaking...")
+                Log.d(TAG, "Mic ready, start speaking...")
             }
 
             override fun onResults(results: Bundle?) {
@@ -83,6 +85,7 @@ class CommandListenerManager(private val context: Context, private val listener:
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-IN")
                 putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+                putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true)
             }
 
             speechRecognizer?.startListening(intent)

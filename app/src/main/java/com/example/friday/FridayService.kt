@@ -7,9 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Binder
 import android.os.Build
-import android.os.Handler
 import android.os.IBinder
-import android.os.Looper
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.telephony.TelephonyManager
@@ -38,6 +36,8 @@ class FridayService : Service(), WakeWordManager.WakeWordListener, TextToSpeech.
 
     // For call listener control
     private lateinit var callListener: CallListener
+
+    private val fullResponse = StringBuffer()
 
 
     private lateinit var commandManager: CommandListenerManager // lateinit (Late Initialization) we are promising to the kotlin compiler I will init this variable later
@@ -128,6 +128,7 @@ class FridayService : Service(), WakeWordManager.WakeWordListener, TextToSpeech.
         commandManager.destroyCommandListenerManager() // here we are not used the ? null check because the variable is lateinit so the variable should have value else the app will crash
         serviceJob.cancel()
         FridayBrain.shutdown()
+        stopSelf()
         super.onDestroy()
     }
 
@@ -165,7 +166,7 @@ class FridayService : Service(), WakeWordManager.WakeWordListener, TextToSpeech.
                     }
 
                     if(utteranceId=="DEACTIVATE_SERVICE"){
-                        stopSelf()
+                        onDestroy()
                         return
                     }
 
@@ -205,16 +206,27 @@ class FridayService : Service(), WakeWordManager.WakeWordListener, TextToSpeech.
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH,null,utteranceId)
     }
 
-    private fun speakAiChunk(text: String): String{
+    private fun speakAiChunk(text: String): String {
+        if (text.isBlank()) return ""
+
         val id = "AI_REPLY_${aiChunkCounter++}"
         lastAiUtteranceId = id
-        tts?.speak(text, TextToSpeech.QUEUE_ADD,null,id)
+
+        // QUEUE_ADD ensures chunks are played sequentially without cutting each other off
+        tts?.speak(text, TextToSpeech.QUEUE_ADD, null, id)
+
+
+
+        fullResponse.append(text)
+
         return id
     }
 
     // from CommandListenerManager interface user happy ku kudukkura command ah inga tha varum CommandListenerManager class la irunthu ing antha command ah process pandrom
-    override fun onCommandReceived(rawCommand: String) {
-        userCommandExecutor.executeCommand(rawCommand)
+    override fun onCommandReceived(command: String) {
+        Log.d("Friday", "Command: $command")
+
+        userCommandExecutor.executeCommand(command)
     }
 
     // from CommandListenerManager interface user kudutha command detect agalana illa internet illana error inga varum atha speakOut fun ku send pani user ku sollurom
@@ -266,27 +278,38 @@ class FridayService : Service(), WakeWordManager.WakeWordListener, TextToSpeech.
         }
         tts?.stop()
         aiChunkCounter = 0
-        val sentenceBuffer= StringBuilder()
+        val sentenceBuffer = StringBuilder()
 
         serviceScope.launch {
             FridayBrain.sendMessage(
                 userInput = query,
-                onToken = {token ->
+                onToken = { token ->
                     sentenceBuffer.append(token)
-                    // sentence boundary vandha odaneye TTS ku queue pandrom - latency kammi aagum
-                    if(token.contains(".") || token.contains("!") || token.contains("?")){
-                        speakAiChunk(sentenceBuffer.toString().trim())
-                        sentenceBuffer.clear()
+
+                    if (token.contains(".") || token.contains("!") || token.contains("?")) {
+                        val englishSentence = sentenceBuffer.toString().trim()
+                        sentenceBuffer.clear() // Clear for the next sentence
+
+
+                        speakAiChunk(englishSentence)
                     }
                 },
                 onDone = {
-                    // leftover text edhachum irundha, adhe LAST chunk - idhu than wake word restart trigger pannum
-                    if(sentenceBuffer.isNotEmpty()){
-                        speakAiChunk(sentenceBuffer.toString().trim())
-                        sentenceBuffer.clear()
+                    // Leftover text edhachum irundha, athaiyum translate panni pesurom
+                    val leftover = sentenceBuffer.toString().trim()
+                    if (leftover.isNotEmpty()) {
+
+                            speakAiChunk(leftover)
+                            Log.d("Friday", "Friday AI reply complete for query: '$query'")
+
+                            onComplete?.invoke()
+
+                    } else {
+                        Log.d("Friday", "Friday AI reply complete for query: '$query'")
+                        onComplete?.invoke()
                     }
-                    Log.d(TAG, "Friday AI reply complete for query: '$query'")
-                    onComplete?.invoke()
+                    Log.d("Friday Response",fullResponse.toString())
+                    fullResponse.delete(0,fullResponse.length)
                 }
             )
         }

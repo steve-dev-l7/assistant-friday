@@ -56,6 +56,7 @@ class HomePage : AppCompatActivity(), TextToSpeech.OnInitListener {
         Manifest.permission.CALL_PHONE,
         Manifest.permission.READ_CALL_LOG,
         Manifest.permission.INTERNET,
+        Manifest.permission.ACCESS_NETWORK_STATE,
         Manifest.permission.READ_CONTACTS,
         Manifest.permission.SEND_SMS,
         Manifest.permission.FOREGROUND_SERVICE,
@@ -212,8 +213,6 @@ class HomePage : AppCompatActivity(), TextToSpeech.OnInitListener {
         mobile = sharedPreferences.getString("mobile", "")
         userDOB =sharedPreferences.getString("dob","")
 
-
-
         // user details irukka illaiyanu check pandrom illana user kitta again profile ah update panna sollurom
         if(mobile == "" || name == "" || userDOB==""){
             Toast.makeText(this,"Failed to load user data", Toast.LENGTH_LONG).show()
@@ -230,6 +229,8 @@ class HomePage : AppCompatActivity(), TextToSpeech.OnInitListener {
         val wakeUpButton = findViewById<Button>(R.id.wakeUpButton)
 
         val settings = findViewById<LinearLayout>(R.id.settings)
+
+
 
         fridayChat = findViewById(R.id.fridayChat)
 
