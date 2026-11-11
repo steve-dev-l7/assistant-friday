@@ -169,6 +169,8 @@ assistant-friday/
 
 ⚠️ **Play Protect warning:** Google Play Protect may show "unrecognized app" because Friday is not distributed through the Play Store. Tap **More details → Install anyway**. The app is open source, so you can read every line of code in this repo.
 
+🔐 **Display over other apps is greyed out?** Android restricts sensitive permissions for apps installed from outside the Play Store. Go to **Settings → Apps → Friday → ⋮ (top right) → Allow restricted settings**, then enable **Display over other apps**.
+
 ## 🤝 Contributing
 
 Suggestions and pull requests are welcome. Open an issue first to discuss big changes.
